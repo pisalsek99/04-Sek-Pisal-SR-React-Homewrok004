@@ -13,7 +13,7 @@ export default function DashboardComponent() {
             key={option.id}
             className={`flex ${option.color} gap-5 py-3.5 px-4 rounded-xl w-[210px] bg-white`}
           >
-            <div className="bg-amber-300 p-2 rounded-xl w-[58px] h-[58px] flex items-center justify-center">
+            <div className="bg-yellow-300 p-2 rounded-xl w-[58px] h-[58px] flex items-center justify-center">
               <img src={option.icon} alt="file icon" />
             </div>
             <div>

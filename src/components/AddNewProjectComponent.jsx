@@ -1,14 +1,20 @@
 import { Plus } from "lucide-react";
 import React, { useState } from "react";
 
-export default function AddNewProjectComponent() {
+export default function AddNewProjectComponent({ setProjects }) {
   const [isOpen, setIsOpen] = useState(false);
   const [dueDate, setDueDate] = useState("");
-
-  // Get today's date in YYYY-MM-DD format
+  const [projectName, setProjectName] = useState("");
+  const [progress, setProgress] = useState("");
+  const [description, setDescription] = useState("");
   const today = new Date().toISOString().split("T")[0];
 
-  // Function to calculate days left
+  const formatDate = (date) => {
+    const selectedDate = new Date(date);
+    const options = { year: "numeric", month: "short", day: "2-digit" };
+    return selectedDate.toLocaleDateString("en-US", options);
+  };
+
   const calculateDaysLeft = (date) => {
     if (!date) return "";
     const selectedDate = new Date(date);
@@ -19,11 +25,37 @@ export default function AddNewProjectComponent() {
     return daysLeft > 0 ? `${daysLeft} days left` : "Expired";
   };
 
+  const handleCreateProject = (e) => {
+    e.preventDefault();
+    const projectDescription = description || "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+
+    const formattedDueDate = formatDate(dueDate);
+
+    // Add new project to the state
+    setProjects((prevProjects) => [
+      ...prevProjects,
+      {
+        name: projectName,
+        dueDate: formattedDueDate,
+        progress,
+        description: projectDescription,
+        daysLeft: calculateDaysLeft(dueDate),
+      },
+    ]);
+
+    // Reset form fields after submission
+    setProjectName("");
+    setDueDate("");
+    setProgress("");
+    setDescription("");
+    setIsOpen(false);
+  };
+
   return (
     <div>
       <button
         onClick={() => setIsOpen(true)}
-        className="text-white bg-custom-sky-blue hover:bg-custom-sky-blue-500 focus:ring-3 focus:outline-none focus:ring-custom-sky-blue-500 font-medium rounded-lg text-sm px-3 py-2.5 text-center dark:bg-custom-sky-blue-500 dark:hover:bg-custom-sky-blue-500 dark:focus:ring-custom-sky-blue-500 flex items-center gap-2"
+        className="text-white bg-custom-sky-blue hover:bg-custom-sky-blue-500 font-medium rounded-lg text-sm px-3 py-2.5 flex items-center gap-2"
         type="button"
       >
         <Plus size={22} /> <span className="text-base">New Project</span>
@@ -31,80 +63,99 @@ export default function AddNewProjectComponent() {
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-10 backdrop-blur-sm">
-          <div className="relative p-4 w-full max-w-md bg-white rounded-2xl shadow-sm dark:bg-gray-700">
-            <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <div className="relative p-4 w-full max-w-md bg-white rounded-2xl shadow-sm">
+            <div className="flex items-center justify-between p-4 border-b rounded-t border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">
                 Create New Project
               </h3>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                className="text-gray-400 rounded-lg text-sm w-8 h-8 flex justify-center items-center"
               >
                 ✖
               </button>
             </div>
 
-            {/* Form */}
-            <form className="p-4 md:p-5">
+            <form className="p-4" onSubmit={handleCreateProject}>
               <div className="grid gap-4 mb-4 grid-cols-2">
                 <div className="col-span-2">
-                  <label htmlFor="projectName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <label
+                    htmlFor="projectName"
+                    className="block mb-2 text-sm font-medium text-gray-900"
+                  >
                     Project Name
                   </label>
                   <input
                     type="text"
                     name="projectName"
                     id="projectName"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    value={projectName}
+                    onChange={(e) => setProjectName(e.target.value)}
+                    className="bg-gray-50 border rounded-lg block w-full p-2.5"
                     placeholder="Type Project Name"
+                    required
                   />
                 </div>
 
                 <div className="col-span-2">
-                  <label htmlFor="dueDate" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <label
+                    htmlFor="dueDate"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
                     Due Date
                   </label>
                   <input
                     type="date"
-                    name="dueDate"
                     id="dueDate"
                     value={dueDate}
                     onChange={(e) => setDueDate(e.target.value)}
-                    min={today} // Prevent past dates
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    min={today}
+                    className="bg-gray-50 border rounded-lg block w-full p-2.5"
+                    required
                   />
                 </div>
 
                 <div className="col-span-2">
-                  <label htmlFor="progress" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <label
+                    htmlFor="progress"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
                     Progress
                   </label>
                   <select
                     id="progress"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    value={progress}
+                    onChange={(e) => setProgress(e.target.value)}
+                    className="bg-gray-50 border rounded-lg block w-full p-2.5"
+                    required
                   >
-                    <option defaultValue="">Select Progress</option>
-                    <option value="100">100</option>
-                    <option value="75">75</option>
-                    <option value="50">50</option>
-                    <option value="25">25</option>
+                    <option value="">Select Progress</option>
+                    <option value="100">100%</option>
+                    <option value="75">75%</option>
+                    <option value="50">50%</option>
+                    <option value="25">25%</option>
                   </select>
                 </div>
 
                 <div className="col-span-2">
-                  <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                    Project Description
+                  <label
+                    htmlFor="description"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Project Description (Optional)
                   </label>
                   <textarea
                     id="description"
                     rows="4"
-                    className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="bg-gray-50 border rounded-lg block w-full p-2.5"
                     placeholder="Write project description here"
                   ></textarea>
                 </div>
               </div>
-              {/*  */}
+
               {/* Days Left Display */}
               <div className="text-center mb-3 font-medium">
                 {dueDate && <p>⏳ {calculateDaysLeft(dueDate)}</p>}
@@ -114,7 +165,7 @@ export default function AddNewProjectComponent() {
               <div className="text-right">
                 <button
                   type="submit"
-                  className="text-white inline-flex items-center bg-custom-sky-blue hover:bg-custom-sky-blue-500 focus:ring-4 focus:outline-none focus:ring-custom-sky-blue-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-custom-sky-blue-500 dark:hover:bg-custom-sky-blue-500 dark:focus:ring-custom-sky-blue-500"
+                  className="text-white bg-custom-sky-blue hover:bg-custom-sky-blue-500 font-medium rounded-lg text-sm px-5 py-2.5"
                 >
                   Create
                 </button>

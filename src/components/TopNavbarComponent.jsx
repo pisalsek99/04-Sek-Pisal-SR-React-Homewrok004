@@ -1,7 +1,8 @@
 import { Bell, Search } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 
 export default function TopNavbarComponent() {
+  const [search , setSearch] = useState();
   // handle on form submit
   const handleSubmit = (e) => {
     // to prevent the page from reload
@@ -19,6 +20,8 @@ export default function TopNavbarComponent() {
         {/* search input */}
         <input
           type="text"
+          value={search}
+       
           placeholder="Search assignment here"
           className="w-full bg-white py-3 pl-14 pr-5 rounded-xl h-12 border-none focus:border-none focus:ring-0 focus:outline-custom-sky-blue"
         />
