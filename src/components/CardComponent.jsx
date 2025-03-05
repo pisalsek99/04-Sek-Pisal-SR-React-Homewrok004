@@ -46,7 +46,7 @@ export default function CardComponent({ project }) {
         <h5 className="capitalize mb-2 text-[20px] font-semibold tracking-tight text-gray-900">
           {project.name}
         </h5>
-        <p className="line-clamp-2 mb-3 font-normal text-[#2B343B] text-[10px]">
+        <p className="line-clamp-2 mb-3 font-normal text-[#2B343B] text-[10px]" style={{ height: "40px" }}>
           {project.description}
         </p>
         <div className="w-full flex justify-between font-medium mb-1">

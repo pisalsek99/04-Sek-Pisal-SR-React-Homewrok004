@@ -1,13 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SidebarComponent from "./components/SidebarComponent";
 import TopNavbarComponent from "./components/TopNavbarComponent";
 import CardComponent from "./components/CardComponent";
 import LearningMaterialsComponent from "./components/LearningMaterialsComponent";
 import DashboardComponent from "./components/DashboardComponent";
 import AddNewProjectComponent from "./components/AddNewProjectComponent";
+import AssignmentsComponent from "./components/AssignmentsComponent";
 
 function App() {
   const [projects, setProjects] = useState([]);
+  const [filteredProjects, setFilteredProjects] = useState(projects);
+  const [searchVal, setSearchVal] = useState("");
+
+  useEffect(() => {
+    if (searchVal === "") {
+      setFilteredProjects(projects);
+    } else {
+      const filtered = projects.filter((project) =>
+        project.name.toLowerCase().includes(searchVal.toLowerCase())
+      );
+      setFilteredProjects(filtered);
+    }
+  }, [searchVal, projects]);
 
   return (
     <div className="flex bg-gray-100">
@@ -16,7 +30,7 @@ function App() {
       </aside>
       <div className="flex flex-col flex-1">
         <header className="w-full p-4">
-          <TopNavbarComponent />
+          <TopNavbarComponent setSearchVal={setSearchVal} /> 
         </header>
         <div className="flex flex-1">
           <main className="flex-1 p-6">
@@ -25,11 +39,11 @@ function App() {
                 <DashboardComponent />
               </div>
               <div className="flex justify-between">
-                <h2 className="text-xl font-semibold mb-5">Assignments</h2>
+                <AssignmentsComponent />
                 <AddNewProjectComponent setProjects={setProjects} />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                {projects.map((project, index) => (
+                {filteredProjects.map((project, index) => (
                   <CardComponent key={index} project={project} />
                 ))}
               </div>

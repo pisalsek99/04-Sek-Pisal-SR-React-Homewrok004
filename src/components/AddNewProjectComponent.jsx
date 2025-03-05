@@ -42,8 +42,6 @@ export default function AddNewProjectComponent({ setProjects }) {
         daysLeft: calculateDaysLeft(dueDate),
       },
     ]);
-
-    // Reset form fields after submission
     setProjectName("");
     setDueDate("");
     setProgress("");
@@ -150,7 +148,7 @@ export default function AddNewProjectComponent({ setProjects }) {
                     rows="4"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="bg-gray-50 border rounded-lg block w-full p-2.5"
+                    className="bg-gray-50 border rounded-lg block w-full p-2.5 resize-none overflow-hidden"
                     placeholder="Write project description here"
                   ></textarea>
                 </div>
